@@ -6,7 +6,7 @@ export const errorResponse = ({status = 400, message = 'Error', extra = undefine
     throw error;
 }
 
-export const badRequestExeption = ({message = 'Bad Request', extra = undefined}) => {
+export const badRequestException = ({message = 'Bad Request', extra = undefined}) => {
     return errorResponse({status: 400, message, extra})
 }
 

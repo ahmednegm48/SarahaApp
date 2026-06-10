@@ -12,4 +12,5 @@ const envPath = {
 dotenv.config({path:resolve(`./src/config/${envPath.development}`)})
 
 export const PORT = process.env.PORT;
-export const DB_URI = process.env.DB_URI
+export const DB_URI = process.env.DB_URI;
+export const SALT_ROUNDS = process.env.SALT_ROUNDS;
