@@ -13,3 +13,13 @@ export const providerEnum = {
     System:0,
     Google:1
 };
+
+export const signatureEnum = {
+    Admin:0,
+    User:1
+};
+
+export const tokenTypeEnum = {
+    Access:0,
+    Refresh:1
+};

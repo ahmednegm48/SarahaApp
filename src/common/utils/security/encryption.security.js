@@ -20,14 +20,14 @@ export const encrypt = (text) => {
 
 export const decrypt = (encrytedData) => {
   const [ivHex, encryptedText] = encrytedData.split(":");
-  const binaryLikeIV = Buffer.from(iv, "hex");
+  const binaryLikeIV = Buffer.from(ivHex, "hex");
   const decipher = crypto.createDecipheriv(
     "aes-256-cbc",
     ENCRYOTION_SECRET_KEY,
     binaryLikeIV,
   );
 
-  let decryptedData = decipher.update(encrytedData, "hex" ,"utf-8");
+  let decryptedData = decipher.update(encryptedText, "hex" ,"utf-8");
   decryptedData += decipher.final("utf-8");
 
   return decryptedData;

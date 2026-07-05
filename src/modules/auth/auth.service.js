@@ -12,6 +12,9 @@ import {
 } from "../../common/utils/security/hash.security.js";
 import { hashEnum } from "../../common/utils/enums/security.enum.js";
 import { encrypt } from "../../common/utils/security/encryption.security.js";
+import jwt from "jsonwebtoken";
+import { ACCESS_TOKEN_USER_SECRET , ACCESS_TOKEN_USER_EXPIRATION } from "../../config/config.service.js";
+import { generateToken, getNewCredentials } from "../../common/utils/tokens/token.js";
 
 export const signup = async (req, res) => {
   const { username, email, password, phone } = req.body;
@@ -34,7 +37,7 @@ export const signup = async (req, res) => {
 
   const user = await createOne({
     model: userModel,
-    data: { username, email, password: hashedPassword , Phone : encrypedPhone},
+    data: { username, email, password: hashedPassword, phone: encrypedPhone },
   });
 
   successResponse({
@@ -63,10 +66,15 @@ export const login = async (req, res) => {
   });
   if (!isMatch) throw badRequestException({ message: "invalid credentials" });
 
+  // const accessToken = generateToken({payload:{id:user._id}, secretKey:ACCESS_TOKEN_USER_SECRET});
+  // const refreshToken = generateToken({payload:{id:user._id}, secretKey:REFRESH_TOKEN_USER_SECRET});
+
+  const tokens = await getNewCredentials(user);
+
   successResponse({
     res,
     statusCode: 200,
     message: "User logged in successfully",
-    data: { user },
+    data: { tokens },
   });
 };
