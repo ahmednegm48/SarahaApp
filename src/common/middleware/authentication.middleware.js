@@ -1,6 +1,7 @@
 import { findById } from "../../DB/database.repository.js";
 import userModel from "../../DB/models/user.model.js";
 import { signatureEnum, tokenTypeEnum } from "../utils/enums/user.enum.js";
+import { forbiddenException } from "../utils/response/error.response.js";
 import { getSignature, verifyToken } from "../utils/tokens/token.js";
 
 export const decodeToken = async ({
@@ -47,6 +48,14 @@ export const authentication = ({ tokenType = tokenTypeEnum.Access }) => {
     });
     req.user = user;
     req.decoded = decoded;
+    return next();
+  };
+};
+
+
+export const authorization = ({ accessRoles = [] }) => {
+  return async (req, res, next) => {
+    if(!accessRoles.includes(req.user.role)) throw forbiddenException({ message: "You are not authorized to access this resource" });
     return next();
   };
 };

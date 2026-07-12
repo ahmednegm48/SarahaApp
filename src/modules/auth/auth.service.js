@@ -13,8 +13,18 @@ import {
 import { hashEnum } from "../../common/utils/enums/security.enum.js";
 import { encrypt } from "../../common/utils/security/encryption.security.js";
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_USER_SECRET , ACCESS_TOKEN_USER_EXPIRATION } from "../../config/config.service.js";
-import { generateToken, getNewCredentials } from "../../common/utils/tokens/token.js";
+import {
+  ACCESS_TOKEN_USER_SECRET,
+  ACCESS_TOKEN_USER_EXPIRATION,
+  GOOGLE_CLIENT_ID,
+} from "../../config/config.service.js";
+import {
+  generateToken,
+  getNewCredentials,
+  newAccessToken,
+} from "../../common/utils/tokens/token.js";
+import { OAuth2Client } from "google-auth-library";
+import { providerEnum } from "../../common/utils/enums/user.enum.js";
 
 export const signup = async (req, res) => {
   const { username, email, password, phone } = req.body;
@@ -74,6 +84,70 @@ export const login = async (req, res) => {
   successResponse({
     res,
     statusCode: 200,
+    message: "User logged in successfully",
+    data: { tokens },
+  });
+};
+
+export const refreshToken = async (req, res) => {
+  const tokens = await newAccessToken(req.user);
+  successResponse({
+    res,
+    statusCode: 200,
+    message: "Tokens refreshed successfully",
+    data: { tokens },
+  });
+};
+
+async function verifyGoogleToken(idToken) {
+  const client = new OAuth2Client();
+  const ticket = await client.verifyIdToken({
+    idToken,
+    audience: GOOGLE_CLIENT_ID, // Specify the GOOGLE_CLIENT_ID of the app that accesses the backend
+    // Or, if multiple clients access the backend:
+    //[WEB_CLIENT_ID_1, WEB_CLIENT_ID_2, WEB_CLIENT_ID_3]
+  });
+  const payload = ticket.getPayload();
+
+  return payload;
+}
+
+export const loginWithGoogle = async (req, res) => {
+  const { idToken } = req.body;
+  const { email, email_verified, given_name, family_name , picture } =
+    await verifyGoogleToken(idToken);
+  if(!email_verified) throw badRequestException({message:"Email not verified"});
+  const user = await findOne({
+    model: userModel,
+    filter: { email },
+  });
+  if(user){
+    if(user.provider !== providerEnum.Google){
+      throw badRequestException({message:"Email already registered with a different provider"});
+    }
+    const tokens = await getNewCredentials(user);
+    return successResponse({
+      res,
+      statusCode: 200,
+      message: "User logged in successfully",
+      data: { tokens },
+    });
+  }
+
+  const newUser = await createOne({
+    model: userModel,
+    data: {
+      firstName: given_name,
+      lastName: family_name,
+      email,
+      provider: providerEnum.Google,
+      profilePic: picture
+    }
+  });
+  const tokens = await getNewCredentials(newUser);
+  successResponse({
+    res,
+    statusCode: 201,
     message: "User logged in successfully",
     data: { tokens },
   });

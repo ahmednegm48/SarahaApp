@@ -7,11 +7,12 @@ import { decrypt } from "../../common/utils/security/encryption.security.js";
 import userModel from "../../DB/models/user.model.js";
 
 export const getProfile = async (req, res) => {
-    if(req.user.phone) req.user.phone = decrypt(req.user.phone);
+  const {user} = req;
+    if(user.phone) user.phone = decrypt(user.phone);
   successResponse({
     res,
     statusCode: 200,
     message: "User profile fetched successfully",
-    data: { ...req.user },
+    data: { user },
   });
 }
