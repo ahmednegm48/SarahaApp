@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema({
     },
     confirmEmail:Date,
     profilePic : String,
+    coverPictures:[String],
 },{timestamps:true,toObject : {virtuals:true},toJSON:{virtuals:true}});
 
 userSchema.virtual("username").set(function(value){

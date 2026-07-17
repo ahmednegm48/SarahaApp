@@ -8,6 +8,7 @@ import {
 } from "./common/utils/response/error.response.js";
 import connectDB from "./DB/connection.js";
 import cors from "cors";
+import { resolve } from "path";
 
 const bootstrap = async (app, express) => {
   app.use(express.json(), cors());
@@ -22,6 +23,7 @@ const bootstrap = async (app, express) => {
   });
 
   app.use("/auth", authRouter);
+  app.use("/uploads", express.static(resolve("./src/uploads")));
   app.use("/users", userRouter);
   app.use("/messages", messageRouter);
 

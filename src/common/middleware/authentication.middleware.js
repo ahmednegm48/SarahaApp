@@ -15,12 +15,11 @@ export const decodeToken = async ({
       : Bearer === "USER"
         ? signatureEnum.User
         : -1;
-      if (signatureLevel === -1) throw new Error("Invalid Bearer token");
+  if (signatureLevel === -1) throw new Error("Invalid Bearer token");
 
   let signature = await getSignature({
     signatureLevel: signatureLevel,
   });
-
 
   const decoded = verifyToken({
     token,
@@ -52,10 +51,12 @@ export const authentication = ({ tokenType = tokenTypeEnum.Access }) => {
   };
 };
 
-
 export const authorization = ({ accessRoles = [] }) => {
   return async (req, res, next) => {
-    if(!accessRoles.includes(req.user.role)) throw forbiddenException({ message: "You are not authorized to access this resource" });
+    if (!accessRoles.includes(req.user.role))
+      throw forbiddenException({
+        message: "You are not authorized to access this resource",
+      });
     return next();
   };
 };
