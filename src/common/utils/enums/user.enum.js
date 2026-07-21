@@ -4,9 +4,8 @@ export const genderEnum = {
 };
 
 export const roleEnum = {
-    User:0,
-    Admin:1,
-    Super_Admin:2
+    Admin:0,
+    User:1,
 };
 
 export const providerEnum = {

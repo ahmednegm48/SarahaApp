@@ -54,7 +54,7 @@ export const findByIdAndUpdate = async({
     id,
     update = {},
     select = '',
-    options = { new: true, runValidators: true }
+    options = { returnDocument: "after", runValidators: true }
 } = {}) => {
     let query = model.findByIdAndUpdate(id, update, options);
     if (select) {
@@ -67,7 +67,7 @@ export const findOneAndUpdate = async({
     filter={},
     update = {},
     select = '',
-    options = { new: true, runValidators: true }
+    options = { returnDocument: "after", runValidators: true }
 } = {}) => {
     let query = model.findOneAndUpdate(filter, update, options);
     if (select) {
@@ -80,7 +80,7 @@ export const findByIdAndReplace = async ({
   model,
   id,
   data = {},
-  options = { new: true, runValidators: true },
+  options = { returnDocument: "after", runValidators: true },
 } = {}) => {
   return await model.findOneAndReplace({ _id: id }, data, options);
 };
