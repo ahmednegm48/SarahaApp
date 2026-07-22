@@ -6,27 +6,27 @@ export const errorResponse = ({status = 400, message = 'Error', extra = undefine
     throw error;
 }
 
-export const badRequestException = ({message = 'Bad Request', extra = undefined}) => {
+export const badRequestException = (message = 'Bad Request', extra = undefined) => {
     return errorResponse({status: 400, message, extra})
 }
 
-export const conflictException = ({message = 'Conflict', extra = undefined}) => {
+export const conflictException = (message = 'Conflict', extra = undefined) => {
     return errorResponse({status: 409, message, extra})
 }
 
-export const notFoundException = ({message = 'Not Found', extra = undefined}) => {
+export const notFoundException = (message = 'Not Found', extra = undefined) => {
     return errorResponse({status: 404, message, extra})
 }
 
-export const unauthorizedException = ({message = 'Unauthorized', extra = undefined}) => {
+export const unauthorizedException = (message = 'Unauthorized', extra = undefined) => {
     return errorResponse({status: 401, message, extra})
 }
 
-export const forbiddenException = ({message = 'Forbidden', extra = undefined}) => {
+export const forbiddenException = (message = 'Forbidden', extra = undefined) => {
     return errorResponse({status: 403, message, extra})
 }
 
-export const tooManyRequestsException = ({message = 'Too Many Requests', extra = undefined}) => {
+export const tooManyRequestsException = (message = 'Too Many Requests', extra = undefined) => {
     return errorResponse({status: 429, message, extra})
 }
 
@@ -36,6 +36,7 @@ export const globalErrorHandler = (err, req, res, next) => {
     return res.status(status).json({
         message: err.message,
         stack: err.stack,
-        status
+        status,
+        extra : err.extra
     })
 }

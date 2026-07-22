@@ -24,11 +24,13 @@ import {
   newAccessToken,
 } from "../../common/utils/tokens/token.js";
 import { OAuth2Client } from "google-auth-library";
-import { providerEnum } from "../../common/utils/enums/user.enum.js";
+import { genderEnum, providerEnum, roleEnum } from "../../common/utils/enums/user.enum.js";
 
 export const signup = async (req, res) => {
   const { username, email, password, phone } = req.body;
+  // const validationResult = signupSchema.validate(req.body);
 
+  // if (validationResult.error) throw badRequestException("Validation Error",validationResult.error);
   if (
     await findOne({
       model: userModel,
@@ -54,7 +56,7 @@ export const signup = async (req, res) => {
     res,
     statusCode: 201,
     message: "User creared successfully",
-    data: { user },
+    data: { validationResult },
   });
 };
 
